@@ -177,7 +177,7 @@ The process is executed in two stages.
 Executing the analysis script produces the following KPI comparison table:
 
 
-```json
+```code
 metric  last_30_days  prior_30_days   delta
     CAC         39.63          45.21  -12.35%
    ROAS          3.36           3.02   11.51%
