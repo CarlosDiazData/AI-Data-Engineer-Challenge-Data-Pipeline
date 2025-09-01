@@ -1,0 +1,54 @@
+# ===================================================================
+# Credentials and Secret Files (THE MOST IMPORTANT SECTION!)
+# Never commit your API keys or credential files to GitHub.
+# ===================================================================
+/config/
+*.json
+.env
+
+# ===================================================================
+# Local Data and Database Files
+# We don't want to commit the raw dataset or any generated databases.
+# ===================================================================
+/data/
+*.csv
+*.db
+*.duckdb
+*.sqlite
+
+# Also ignore the exchange folder, which contains the JSON output.
+# The result is generated, not stored in version control.
+/exchange/
+
+# ===================================================================
+# Python Dependencies and Virtual Environments
+# The list of dependencies is in requirements.txt, not the libraries themselves.
+# ===================================================================
+/venv/
+/env/
+/.venv/
+__pycache__/
+*.pyc
+
+# ===================================================================
+# Operating System Files
+# Common junk from macOS, Windows, and Linux.
+# ===================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================================================================
+# IDE and Code Editor Files
+# User-specific development environment configurations.
+# ===================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===================================================================
+# Log and Output Files
+# ===================================================================
+*.log
+*.out
