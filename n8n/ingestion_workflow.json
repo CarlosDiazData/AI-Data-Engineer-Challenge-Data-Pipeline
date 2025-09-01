@@ -1,0 +1,175 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        -32
+      ],
+      "id": "241b44fa-11c1-4c9c-a222-afbc68086896",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://drive.usercontent.google.com/uc?id=1RXj_3txgmyX2Wyt9ZwM7l4axfi5A6EC-&export=download",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -464,
+        -32
+      ],
+      "id": "761740c5-c37d-4720-87d3-2d72c0632562",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -32
+      ],
+      "id": "7e88c9fc-88cc-41d1-8c77-54a90d160e1f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b40479e-a34f-4bfa-86eb-e69b9a4ea991",
+              "name": "load_date",
+              "value": "={{ new Date() }}",
+              "type": "object"
+            },
+            {
+              "id": "82d72ea2-a290-45d9-a276-b6fc33bb011b",
+              "name": "source_file_name",
+              "value": "ads_spend.csv",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -32
+      ],
+      "id": "1a47bb50-f292-48b2-8fdd-b1200800fcbe",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "projectId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sqlQuery": "{{ $json.sql_query }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        -32
+      ],
+      "id": "e5e16374-38ad-4860-b11f-d13af5deaf7a",
+      "name": "Execute a SQL query"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst tableName = \"`bionic-genre-470500-t4.ad_spend_data.raw_ad_spend`\";\n\nlet query = `INSERT INTO ${tableName} (date, platform, account, campaign, country, device, spend, clicks, impressions, conversions, load_date, source_file_name) VALUES `;\n\nconst valueStrings = items.map(item => {\n  const json = item.json;\n\n  const date = `'${json.date}'`;\n  const platform = `'${json.platform}'`;\n  const account = `'${json.account}'`;\n  const campaign = `'${json.campaign}'`;\n  const country = `'${json.country}'`;\n  const device = `'${json.device}'`;\n  const spend = json.spend; \n  const clicks = json.clicks; \n  const impressions = json.impressions; \n  const conversions = json.conversions; \n  const load_date = `'${json.load_date}'`;\n  const source_file_name = `'${json.source_file_name}'`;\n\n  return `(${date}, ${platform}, ${account}, ${campaign}, ${country}, ${device}, ${spend}, ${clicks}, ${impressions}, ${conversions}, ${load_date}, ${source_file_name})`;\n});\n\nquery += valueStrings.join(',\\n');\n\nquery += ';';\n\nreturn [{\n  json: {\n    sql_query: query\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -32
+      ],
+      "id": "8d692d80-5233-4588-8bc3-883f1948a2a3",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8296dd10-92a1-4a5f-869d-76210bc3a631",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d2daad414314381c1c745df54914d2f5154952e2830855a207e8c13c1ca0e322"
+  },
+  "id": "mTfdKSuuLxs9ZhBn",
+  "tags": []
+}
